@@ -1,0 +1,30 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: user-service
+  cloud:
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://localhost:8761/eureka
+        instance:
+          prefer-ip-address: true
+  datasource:
+    username: user
+    password: 1234
+    url: jdbc:h2:mem:smart_bank_db
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    com.smart.bank: INFO

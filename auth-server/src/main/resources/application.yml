@@ -1,0 +1,30 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: auth-server
+  datasource:
+    username: user
+    password: 1234
+    url: jdbc:h2:mem:smart_bank_db
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  cloud:
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://localhost:8761/eureka
+        instance:
+          prefer-ip-address: true
+
+jwt:
+  secret: secret_nedi3287y38278y7i2w921ey38re7y328e7y32e^&&^%$%#SCDS#@!#@VFDY^%ETGRFSEDA
