@@ -4,6 +4,12 @@ spring:
   application:
     name: api-gateway
   cloud:
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://admin:admin@localhost:8761/eureka/
+      instance:
+        prefer-ip-address: true
     gateway:
       discovery:
         locator:
@@ -12,16 +18,21 @@ spring:
       default-filters:
         - AddResponseHeader=X-Global-Response-Header,From-API-Gateway
       routes:
+        - id: auth-server
+          uri: lb://auth-server
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - AddRequestHeader=X-Request-Origin,SmartBank
+            - AddResponseHeader=X-Response-Handled-By,API-Gateway
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/api/users/**
           filters:
+            - name: JwtAuthFilter
             - AddRequestHeader=X-Request-Origin,SmartBank
             - AddResponseHeader=X-Response-Handled-By,API-Gateway
-eureka:
-  client:
-    service-url:
-      defaultZone: http://admin:admin@localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
+
+jwt:
+  secret: secret_nedi3287y38278y7i2w921ey38re7y328e7y32e^&&^%$%#SCDS#@!#@VFDY^%ETGRFSEDA
