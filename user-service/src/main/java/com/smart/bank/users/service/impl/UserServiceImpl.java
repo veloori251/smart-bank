@@ -6,6 +6,7 @@ import com.smart.bank.users.entity.User;
 import com.smart.bank.users.exception.ResourceNotFoundException;
 import com.smart.bank.users.mapper.UserMapper;
 import com.smart.bank.users.repository.UserRepository;
+import com.smart.bank.users.service.ProducerService;
 import com.smart.bank.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper mapper;
+    private final ProducerService producerService;
 
     @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         log.info("Creating user with email: {}",userRequestDTO.getEmail());
         User user = mapper.toEntity(userRequestDTO);
         User savedUser = userRepository.save(user);
+        producerService.publishUserCreated(savedUser);
         return mapper.toResponseDTO(savedUser);
     }
 
@@ -51,6 +54,7 @@ public class UserServiceImpl implements UserService {
         user.setPhone(userRequestDTO.getPhone());
         user.setAddress(userRequestDTO.getAddress());
         User updatedUser = userRepository.save(user);
+        producerService.publishUserUpdated(updatedUser);
         return mapper.toResponseDTO(updatedUser);
     }
 
@@ -58,6 +62,7 @@ public class UserServiceImpl implements UserService {
     public String deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user not found with id: "+id));
         userRepository.delete(user);
+        producerService.publishUserDeleted(user.getFullName());
         return "User deleted successfully";
     }
 }
