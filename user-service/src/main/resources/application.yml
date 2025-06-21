@@ -28,3 +28,8 @@ spring:
 logging:
   level:
     com.smart.bank: INFO
+app:
+  admin:
+    username: admin
+    password: admin123
+    email: admin@example.com

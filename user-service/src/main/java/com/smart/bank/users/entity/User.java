@@ -1,18 +1,17 @@
 package com.smart.bank.users.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Pattern;
+import lombok.*;
 
 @Table(name = "user_tbl")
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +26,17 @@ public class User {
     private String phone;
 
     private String address;
+
+    private String password;
+
+    private String username;
+
+    private String role;
+
+    private String status;
+
+    private String country;
+
+
+
 }

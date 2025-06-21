@@ -25,14 +25,65 @@ spring:
           filters:
             - AddRequestHeader=X-Request-Origin,SmartBank
             - AddResponseHeader=X-Response-Handled-By,API-Gateway
+            - name: CircuitBreaker
+              args:
+                name: auth-server
+                fallbackUri: forward:/fallback/auth
+            - name: Retry
+              args:
+                retries: 3
+                statusCodes: 500
+                backOffPeriod: 2s
+                methods: GET,POST
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/users/**
+            - Path=/api/v1/users/**,/api/v1/admin/**
           filters:
             - name: JwtAuthFilter
             - AddRequestHeader=X-Request-Origin,SmartBank
             - AddResponseHeader=X-Response-Handled-By,API-Gateway
+            - name: CircuitBreaker
+              args:
+                name: user-service
+                fallbackUri: forward:/fallback/user
+            - name: Retry
+              args:
+                retries: 3
+                statusCodes: 500
+                backOffPeriod: 2s
+                methods: POST,GET,PUT,DELETE
+  resilence4j:
+    circuitbreaker:
+      config:
+        default:
+          registerHealthIndicator: true
+          slidingWindowType: COUNT_BASED
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          minimumNumberOfCalls: 5
+          automaticTransitionFromOpenToHalfOpenEnabled: true
+          permittedNumberOfCallsInHalfOpenState: 3
+          waitDurationInOpenState: 10s
+          slowCallDurationThreshold: 50
+          slowCallRateThreshold: 2s
+          eventConsumerBufferSize: 10
+          recordExceptions:
+            - java.net.ConnectException
+            - java.net.SocketTimeoutException
+            - org.springframework.web.client.HttpServerErrorException
 
+        instance:
+          config:
+            user-service:
+              baseConfig: default
+            auth-server:
+              baseConfig: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 jwt:
   secret: secret_nedi3287y38278y7i2w921ey38re7y328e7y32e^&&^%$%#SCDS#@!#@VFDY^%ETGRFSEDA

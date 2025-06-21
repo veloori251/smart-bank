@@ -1,4 +1,4 @@
-package com.auth.server.config;
+package com.smart.bank.users.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,25 +15,30 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**")
-                .disable()
-        )
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .disable()
+                )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                )
+                ) // Disable CSRF for stateless API
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/auth/**",
-                                "/h2-console/**",
+                                "/api/v1/users/register",
+                                "/api/v1/users/username/**",
+                                "/actuator/**",
+                                "/h2-console/**",// Allow actuator endpoints
                                 "/v3/api-docs/**",       // OpenAPI/Swagger
                                 "/swagger-ui/**",         // Swagger UI
                                 "/swagger-resources/**"   // Swagger resources
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")// Public endpoints
+                        .anyRequest().authenticated() // All other endpoints require authentication
                 )
-                .httpBasic(httpBasic -> {});
+                .httpBasic(httpBasic -> {}); // Optional: Enable basic auth if needed
+
         return http.build();
     }
 

@@ -1,5 +1,6 @@
 package com.smart.bank.users.controller;
 
+import com.smart.bank.users.dto.AuthServiceResponseDto;
 import com.smart.bank.users.dto.UserRequestDTO;
 import com.smart.bank.users.dto.UserResponseDTO;
 import org.springframework.http.ResponseEntity;
@@ -7,11 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 public interface UserController {
 
-    @PostMapping
-    ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO,@RequestHeader("X-Request-Origin") String origin);
+    @PostMapping("/register")
+    ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO);
 
     @GetMapping("/{id}")
     ResponseEntity<UserResponseDTO> getUserById(@PathVariable(name = "id") Long id);
@@ -24,4 +25,7 @@ public interface UserController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteUser(@PathVariable(name = "id") Long id);
+
+    @GetMapping("/username/{username}")
+    ResponseEntity<AuthServiceResponseDto> getUserByUsername(@PathVariable(name = "username") String username);
 }

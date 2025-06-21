@@ -1,6 +1,7 @@
 package com.smart.bank.users.controller.impl;
 
 import com.smart.bank.users.controller.UserController;
+import com.smart.bank.users.dto.AuthServiceResponseDto;
 import com.smart.bank.users.dto.UserRequestDTO;
 import com.smart.bank.users.dto.UserResponseDTO;
 import com.smart.bank.users.service.UserService;
@@ -20,8 +21,8 @@ public class UserControllerImpl implements UserController {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<UserResponseDTO> createUser(UserRequestDTO userRequestDTO,String origin) {
-        log.info("Received request from: {}", origin);
+    public ResponseEntity<UserResponseDTO> createUser(UserRequestDTO userRequestDTO) {
+        log.info("Creating user with email: {}",userRequestDTO.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO));
     }
 
@@ -43,5 +44,10 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<String> deleteUser(Long id) {
         return ResponseEntity.ok(userService.deleteUser(id));
+    }
+
+    @Override
+    public ResponseEntity<AuthServiceResponseDto> getUserByUsername(String username) {
+        return ResponseEntity.ok(userService.getUserByUsername(username));
     }
 }

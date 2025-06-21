@@ -1,5 +1,6 @@
 package com.smart.bank.users.service;
 
+import com.smart.bank.users.dto.AuthServiceResponseDto;
 import com.smart.bank.users.dto.UserRequestDTO;
 import com.smart.bank.users.dto.UserResponseDTO;
 
@@ -12,4 +13,6 @@ public interface UserService {
     List<UserResponseDTO> getAllUsers();
     UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO);
     String deleteUser(Long id);
+
+    AuthServiceResponseDto getUserByUsername(String username);
 }

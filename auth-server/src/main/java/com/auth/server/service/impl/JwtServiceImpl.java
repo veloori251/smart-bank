@@ -1,6 +1,6 @@
 package com.auth.server.service.impl;
 
-import com.auth.server.entity.User;
+import com.auth.server.dto.UserResponseDto;
 import com.auth.server.service.IJwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,8 +24,9 @@ public class JwtServiceImpl implements IJwtService {
                 .getSubject();
     }
 
+
     @Override
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(UserResponseDto user) {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .issuedAt(new Date())
@@ -35,7 +36,7 @@ public class JwtServiceImpl implements IJwtService {
     }
 
     @Override
-    public String generateRefreshToken(User user) {
+    public String generateRefreshToken(UserResponseDto user) {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .issuedAt(new Date())
